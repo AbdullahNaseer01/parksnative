@@ -1,0 +1,141 @@
+// import React from 'react';
+// import { StyleSheet, Text, View } from 'react-native';
+// import Location from '../assets/icons/location.svg';
+// import { COLORS } from '../constants/colors.constant';
+
+// const MainCard = ({ name, location, imageURL }) => {
+//     console.log('name', name);
+//     console.log('location', location);
+//     console.log('imageURL', imageURL);
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.textContainer}>
+//         <Text style={styles.locationTitle}>{name}</Text>
+//         <View style={styles.locationContainer}>
+//           <Location width={15} height={15} />
+//           <Text style={styles.locationText}>{location}</Text>
+//         </View>
+//       </View>
+//     </View>
+//   );
+// };
+
+// export default MainCard;
+
+// const styles = StyleSheet.create({
+//   container: {
+//     width: 222,
+//     height: 143,
+//     backgroundColor: 'red',
+//     borderRadius: 13,
+//     paddingHorizontal: 14,
+//     paddingVertical: 12,
+//   },
+//   textContainer: {
+//     position: 'absolute',
+//     bottom: 10, // Adjust this value as needed
+//     left: 14,
+//   },
+//   locationContainer: {
+//     flexDirection: 'row',
+//     alignItems: 'center',
+//     marginTop: 4, // Adjust this value as needed
+//   },
+//   locationTitle: {
+//     fontSize: 16,
+//     fontWeight: 'bold',
+//     color: COLORS.WHITE,
+//   },
+//   locationText: {
+//     fontSize: 12,
+//     fontWeight: '500',
+//     color: COLORS.WHITE,
+//     marginLeft: 8,
+//   },
+// });
+
+// MainCard.js
+import React from 'react';
+import {StyleSheet, Text, View, ImageBackground, Image} from 'react-native';
+import Location from '../assets/icons/location.svg';
+import {COLORS} from '../constants/colors.constant';
+
+const MainCard = ({name, location, imageURL}) => {
+  console.log('name', name);
+  console.log('location', location);
+  console.log('imageURL', imageURL);
+  return (
+    <View style={styles.container}>
+      {imageURL ? (
+        <ImageBackground
+          source={{uri: imageURL}}
+          style={styles.imageBackground}
+          imageStyle={styles.imageStyle}>
+          <View style={styles.textContainer}>
+            <Text style={styles.locationTitle}>{name}</Text>
+            <View style={styles.locationContainer}>
+              <Location width={15} height={15} />
+              <Text style={styles.locationText}>{location}</Text>
+            </View>
+          </View>
+        </ImageBackground>
+      ) : (
+        <View style={styles.placeholderContainer}>
+          <Text style={styles.placeholderText}>No Image Available</Text>
+        </View>
+      )}
+    </View>
+  );
+};
+
+export default MainCard;
+
+const styles = StyleSheet.create({
+  container: {
+    width: 222,
+    height: 143,
+    borderRadius: 13,
+    overflow: 'hidden',
+    marginRight: 12,
+  },
+  imageBackground: {
+    width: '100%',
+    height: '100%',
+    justifyContent: 'flex-end',
+  },
+  imageStyle: {
+    borderRadius: 13,
+  },
+  textContainer: {
+    position: 'absolute',
+    bottom: 10,
+    left: 14,
+  },
+  locationContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 4,
+  },
+  locationTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: COLORS.WHITE,
+  },
+  locationText: {
+    fontSize: 12,
+    fontWeight: '500',
+    color: COLORS.WHITE,
+    marginLeft: 8,
+  },
+  placeholderContainer: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'lightgray',
+    borderRadius: 13,
+  },
+  placeholderText: {
+    fontSize: 16,
+    color: 'gray',
+  },
+});

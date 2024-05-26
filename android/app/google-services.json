@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "2736758913",
+    "project_id": "national-parks-c2951",
+    "storage_bucket": "national-parks-c2951.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:2736758913:android:2e81aa517e426cbd096d80",
+        "android_client_info": {
+          "package_name": "com.parksnative"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "2736758913-f7evl2gtr707psho97svvo9n0eem9ss2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.parksnative",
+            "certificate_hash": "5e8f16062ea3cd2c4a0d547876baa6f38cabf625"
+          }
+        },
+        {
+          "client_id": "2736758913-s1o74js61qj18r7clf3jjfblf181i3vs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA8gRkG-NUh_J1WPuxB8UoRpGPn5BaphnI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "2736758913-s1o74js61qj18r7clf3jjfblf181i3vs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
