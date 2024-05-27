@@ -2,11 +2,17 @@ import {StyleSheet, View, TouchableOpacity} from 'react-native';
 import React from 'react';
 import LeftfArrow from '../assets/icons/leftArrow.svg';
 import Heart from '../assets/icons/heart.svg';
+import {useNavigation} from '@react-navigation/native';
 
 const MainNavigator = () => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.goBack();
+        }}
+        style={styles.button}>
         <LeftfArrow width={18} hight={18} />
       </TouchableOpacity>
       <TouchableOpacity style={styles.button}>

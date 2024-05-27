@@ -3,12 +3,20 @@ import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
 import {db} from '../../config/firebase';
 import {ToastAndroid} from 'react-native';
+// import {GoogleSignin} from '@react-native-google-signin/google-signin';
 
 const initialState = {
   user: null,
   isLoading: false,
   error: null,
 };
+
+// GoogleSignin.configure({
+//   webClientId:
+//     '410122792339-986og3kdl5im005jcjr1o4a9rnls27b4.apps.googleusercontent.com',
+//     /// the credential have to be replaced with the web client id of the google cloud console
+// });
+
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -117,5 +125,49 @@ export const loginUser =
       dispatch(setLoading(false));
     }
   };
+
+
+  // export const googleSignin = async () => {
+  //   try {
+  //     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+  //     await GoogleSignin.signOut();
+  //     const {idToken} = await GoogleSignin.signIn();
+  //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+  //     await auth().signInWithCredential(googleCredential);
+  //     const userDoc = await firestore()
+  //       .collection('users')
+  //       .doc(auth()?.currentUser?.uid)
+  //       .get();
+  
+  //     if (!userDoc.exists) {
+  //       await firestore()
+  //         .collection('users')
+  //         .doc(auth()?.currentUser?.uid)
+  //         .set({
+  //           displayName: auth()?.currentUser?.displayName,
+  //           email: auth()?.currentUser?.email,
+  //           profileImage: auth()?.currentUser?.photoURL || null,
+  //           uid: auth()?.currentUser?.uid,
+  //         });
+  //       ToastAndroid.show('New user signed up successfully!', ToastAndroid.SHORT);
+  //     } else {
+  //       ToastAndroid.show('User signed in successfully!', ToastAndroid.SHORT);
+  //     }
+  //   } catch (error) {
+  //     console.log('error', error);
+  //     ToastAndroid.show('Google Signin failed', ToastAndroid.SHORT);
+  //     if (error.code === 'auth/account-exists-with-different-credential') {
+  //       console.log('danger', 'Account already exists with different credential');
+  //       ToastAndroid.show(
+  //         'Account already exists with different credential',
+  //         ToastAndroid.SHORT,
+  //       );
+  //     }
+  //     if (error.code === 'auth/invalid-credential') {
+  //       console.log('danger', 'Invalid credential');
+  //       ToastAndroid.show('Invalid credential', ToastAndroid.SHORT);
+  //     }
+  //   }
+  // };
 
 export default authSlice.reducer;
