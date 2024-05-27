@@ -1,11 +1,24 @@
-import React, { useState } from 'react';
-import { Alert, Image, ScrollView, StyleSheet, Text, View } from 'react-native';
+import React, {useState} from 'react';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import Button from '../../components/Button';
 import CustomTextInput from '../../components/TextInput';
-import { COLORS } from '../../constants/colors.constant';
+import {COLORS} from '../../constants/colors.constant';
 import GoogleButton from '../../components/GoogleButton';
+import {useNavigation} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {loginUser} from '../../store/slices/authSlice';
 
-const Login = ({ imageUrl }) => {
+const Login = ({imageUrl}) => {
+  const Navigation = useNavigation();
+  const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -22,17 +35,13 @@ const Login = ({ imageUrl }) => {
     }
 
     setLoading(true);
-
-    setTimeout(() => {
-      console.log('Email:', email);
-      console.log('Password:', password);
-      setLoading(false);
-    }, 2000);
+    dispatch(loginUser({email, password}));
+    setLoading(false);
   };
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <Image source={{ uri: imageUrl }} style={styles.image} />
+      <Image source={{uri: imageUrl}} style={styles.image} />
       <Text style={styles.heading}>Welcome Back!</Text>
       <Text style={styles.para}>Please login to continue</Text>
 
@@ -53,25 +62,27 @@ const Login = ({ imageUrl }) => {
         />
 
         <Text
-          onPress={() => Alert.alert('Forgot Password', 'Navigate to forgot password screen')}
-          style={styles.forgot}
-        >
+          onPress={() =>
+            Navigation.navigate('ForgotScreen')
+          }
+          style={styles.forgot}>
           Forgot Password?
         </Text>
       </View>
 
-      <Button text="Login" onPress={handleSubmit} loading={loading} />
+      <Button
+        text={loading ? 'Logging in...' : 'Login'}
+        onPress={handleSubmit}
+        loading={loading}
+      />
 
       <View style={styles.registerTextContainer}>
         <Text style={styles.buttonText}>Don't have an account?</Text>
-        <Text
-          onPress={() => Alert.alert('Register', 'Navigate to register screen')}
-          style={styles.loginText}
-        >
-          Register here
-        </Text>
+        <TouchableOpacity onPress={() => Navigation.navigate('Register')}>
+          <Text style={styles.loginText}>Register here</Text>
+        </TouchableOpacity>
       </View>
-      <GoogleButton/>
+      <GoogleButton />
     </ScrollView>
   );
 };

@@ -112,7 +112,7 @@ export default Header;
 
 const styles = StyleSheet.create({
   header: {
-    // marginTop: 40,
+    marginTop: 20,
     marginHorizontal: 16,
     flexDirection: 'row',
     justifyContent: 'space-between',

@@ -9,14 +9,12 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import {colors} from '../../utils/styles';
-import NavigationArrow from '../../components/NavigationArrow';
 import CustomTextInput from '../../components/TextInput';
 import Button from '../../components/Button';
-import {privateStyle} from '../../components/styles';
 import {useNavigation} from '@react-navigation/native';
 import auth from '@react-native-firebase/auth';
 import {useState} from 'react';
+import { COLORS } from '../../constants/colors.constant';
 
 const ForgotScreen = () => {
   const navigation = useNavigation();
@@ -44,21 +42,21 @@ const [email, setEmail] = useState('');
   };
 
   return (
-    <ScrollView style={{backgroundColor: colors.white}}>
-      <NavigationArrow
+    <ScrollView style={{backgroundColor: COLORS.WHITE}}>
+      {/* <NavigationArrow
         onPress={() => {
           navigation.navigate('LoginScreen');
         }}
-      />
+      /> */}
 
       <>
-        <Image
+        {/* <Image
           style={styles.Image}
           source={require('../../assets/images/forgot.jpg')}
-        />
+        /> */}
         <View style={styles.formContainer}>
           <View>
-            <Text style={privateStyle.heading}>Forgot Password ?</Text>
+            <Text>Forgot Password ?</Text>
             <Text
               style={{
                 marginBottom: 18,

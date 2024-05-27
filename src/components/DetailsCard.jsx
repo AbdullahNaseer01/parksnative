@@ -1,11 +1,15 @@
 import React from 'react';
-import {StyleSheet, Text, View, Image} from 'react-native';
+import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {COLORS} from '../constants/colors.constant';
 import Location from '../assets/icons/locationGreen.svg';
+import {useNavigation} from '@react-navigation/native';
 
 const DetailsCard = ({name, location, description, imageURL}) => {
+  const navigation = useNavigation();
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigation.navigate('detailsScreen')}>
       <View style={styles.imageContainer}>
         <Image
           source={{
@@ -24,7 +28,7 @@ const DetailsCard = ({name, location, description, imageURL}) => {
         </View>
         <Text style={styles.description}>{description}</Text>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -74,6 +78,6 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 12,
-    color: COLORS.TEXTSECONDARY
+    color: COLORS.TEXTSECONDARY,
   },
 });
