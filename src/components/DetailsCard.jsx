@@ -1,32 +1,36 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {COLORS} from '../constants/colors.constant';
 import Location from '../assets/icons/locationGreen.svg';
 import {useNavigation} from '@react-navigation/native';
 
-const DetailsCard = ({name, location, description, imageURL}) => {
+const DetailsCard = ({park}) => {
   const navigation = useNavigation();
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate('detailsScreen')}>
+      onPress={() => navigation.navigate('detailsScreen', {park})}>
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: imageURL
-              ? imageURL
+            uri: park?.images[0]?.url
+              ? park?.images[0]?.url
               : 'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
           }}
           style={styles.image}
         />
       </View>
       <View style={styles.detailsContainer}>
-        <Text style={styles.heading}>{name}</Text>
+        <Text style={styles.heading} numberOfLines={1} ellipsizeMode="tail">
+          {park?.name}
+        </Text>
         <View style={styles.locationContainer}>
           <Location width={15} height={15} />
-          <Text style={styles.locationText}>{location}</Text>
+          <Text style={styles.locationText}>{park?.addresses[0]?.city}</Text>
         </View>
-        <Text style={styles.description}>{description}</Text>
+        <Text style={styles.description} numberOfLines={2} ellipsizeMode="tail">
+          {park?.description}
+        </Text>
       </View>
     </TouchableOpacity>
   );

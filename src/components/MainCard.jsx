@@ -1,69 +1,9 @@
-// import React from 'react';
-// import { StyleSheet, Text, View } from 'react-native';
-// import Location from '../assets/icons/location.svg';
-// import { COLORS } from '../constants/colors.constant';
-
-// const MainCard = ({ name, location, imageURL }) => {
-//     console.log('name', name);
-//     console.log('location', location);
-//     console.log('imageURL', imageURL);
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.textContainer}>
-//         <Text style={styles.locationTitle}>{name}</Text>
-//         <View style={styles.locationContainer}>
-//           <Location width={15} height={15} />
-//           <Text style={styles.locationText}>{location}</Text>
-//         </View>
-//       </View>
-//     </View>
-//   );
-// };
-
-// export default MainCard;
-
-// const styles = StyleSheet.create({
-//   container: {
-//     width: 222,
-//     height: 143,
-//     backgroundColor: 'red',
-//     borderRadius: 13,
-//     paddingHorizontal: 14,
-//     paddingVertical: 12,
-//   },
-//   textContainer: {
-//     position: 'absolute',
-//     bottom: 10, // Adjust this value as needed
-//     left: 14,
-//   },
-//   locationContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//     marginTop: 4, // Adjust this value as needed
-//   },
-//   locationTitle: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     color: COLORS.WHITE,
-//   },
-//   locationText: {
-//     fontSize: 12,
-//     fontWeight: '500',
-//     color: COLORS.WHITE,
-//     marginLeft: 8,
-//   },
-// });
-
-// MainCard.js
 import React from 'react';
 import {StyleSheet, Text, View, ImageBackground, Image} from 'react-native';
 import Location from '../assets/icons/location.svg';
 import {COLORS} from '../constants/colors.constant';
 
 const MainCard = ({name, location, imageURL}) => {
-  console.log('name', name);
-  console.log('location', location);
-  console.log('imageURL', imageURL);
   return (
     <View style={styles.container}>
       {imageURL ? (

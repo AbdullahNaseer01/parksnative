@@ -1,97 +1,73 @@
-import React from 'react';
-import {StyleSheet, View, ScrollView, useWindowDimensions} from 'react-native';
+import React, { useEffect, useState, useRef } from 'react';
+import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
 import DetailsCard from './DetailsCard';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchParks, clearParksData } from '../store/slices/parksSlice';
+import { COLORS } from '../constants/colors.constant';
 
-const data = [
-  {
-    id: 1,
-    name: 'The Pink Beach',
-    location: 'Location 1',
-    description:
-      'This exceptional beach gets its striking color from microscopic animals called...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    id: 2,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    id: 3,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
+const DetailsCardList = ({ selectedState }) => {
+  const dispatch = useDispatch();
+  const parks = useSelector(state => state?.parks?.data?.data?.data || []);
+  const totalPages = useSelector(state => state?.parks?.data?.data?.total || 0);
 
-  {
-    id: 4,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    id: 5,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    id: 6,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    id: 7,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    id: 8,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    id: 9,
-    name: 'The Blue Lake',
-    location: 'Location 2',
-    description: 'The lake derives its blue color from minerals...',
-    imageURL:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-];
+  const [activity, setActivity] = useState('');
+  const [start, setStart] = useState(0);
+  const [loading, setLoading] = useState(false);
 
-const DetailsCardList = () => {
-  return (
+  const previousStateRef = useRef();
+  useEffect(() => {
+    previousStateRef.current = selectedState;
+  });
+  const previousState = previousStateRef.current;
+
+  const params = {
+    limit: '10',
+    start: start.toString(),
+    stateCode: selectedState,
+  };
+  if (activity) {
+    params.q = activity;
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        if (selectedState !== previousState) {
+          dispatch(clearParksData());  // Clear the parks data only when selectedState changes
+          setStart(0);  // Reset start to 0 when state changes
+        }
+        await dispatch(fetchParks(params));
+        setLoading(false);
+      } catch (error) {
+        console.error('Error fetching parks', error);
+        setLoading(false);
+      }
+    };
+    fetchData();
+  }, [dispatch, start, selectedState, activity, previousState]);
+
+  const handleLoadMore = () => {
+    if (start + 10 < totalPages) {
+      setStart(prevStart => prevStart + 10);
+    }
+  };
+
+  return loading ? (
+    <Text>Loading</Text>
+  ) : (
     <ScrollView>
       <View style={styles.container}>
-        {data.map(item => (
-          <DetailsCard
-            key={item.id}
-            name={item.name}
-            location={item.location}
-            description={item.description}
-            imageURL={item.imageURL}
-          />
+        {parks?.map(item => (
+          <DetailsCard key={item.id} park={item} />
         ))}
+        {start + 10 < totalPages && (
+          <TouchableOpacity
+            style={styles.loadMoreContainer}
+            onPress={handleLoadMore}>
+            <Text style={styles.loadMore}>Load More</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </ScrollView>
   );
@@ -102,5 +78,14 @@ export default DetailsCardList;
 const styles = StyleSheet.create({
   container: {
     marginHorizontal: 16,
+  },
+  loadMoreContainer: {
+    alignItems: 'center',
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  loadMore: {
+    textAlign: 'center',
+    color: COLORS.TEXTLINK,
   },
 });

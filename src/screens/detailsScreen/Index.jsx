@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   StyleSheet,
   Text,
@@ -10,29 +10,18 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import MainNavigator from '../../components/MainNavigator';
-import { COLORS } from '../../constants/colors.constant';
+import {COLORS} from '../../constants/colors.constant';
 import Location from '../../assets/icons/locationGreen.svg';
 
-const DetailsScreen = () => {
+const DetailsScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
+  const {park} = route.params;
 
-  const previewImages = [
-    'https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=600',
-    'https://images.pexels.com/photos/104827/cat-pet-animal-domestic-104827.jpeg?auto=compress&cs=tinysrgb&w=600',
-    'https://images.pexels.com/photos/356378/pexels-photo-356378.jpeg?auto=compress&cs=tinysrgb&w=600',
-    'https://images.pexels.com/photos/45170/kittens-cat-cat-puppy-rush-45170.jpeg?auto=compress&cs=tinysrgb&w=600',
-  ];
+  const previewImages = park?.images?.map(image => image.url);
+  const activities = park?.activities?.map(activity => activity.name);
 
-  const amenities = [
-    { id: '1', name: 'WiFi' },
-    { id: '2', name: 'Parking' },
-    { id: '3', name: 'Swimming Pool' },
-    { id: '4', name: 'Gym' },
-    { id: '5', name: 'Pet Friendly' },
-  ];
-
-  const handleImagePress = (image) => {
+  const handleImagePress = image => {
     setSelectedImage(image);
     setModalVisible(true);
   };
@@ -46,7 +35,7 @@ const DetailsScreen = () => {
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: 'https://images.pexels.com/photos/417173/pexels-photo-417173.jpeg?auto=compress&cs=tinysrgb&w=600',
+            uri: park?.images[0]?.url || 'https://via.placeholder.com/150',
           }}
           style={styles.image}
           resizeMode="cover"
@@ -62,34 +51,33 @@ const DetailsScreen = () => {
           <Text style={styles.locationText}>Location here</Text>
         </View>
         <Text style={styles.detailsText}>
-          This will be the detailing page of the image or the product, 60% of
-          the screen and will be scrollable.
+          {park?.description || 'Description not available'}
         </Text>
         <Text style={styles.heading}>Preview</Text>
         <FlatList
           horizontal
           data={previewImages}
-          renderItem={({ item }) => (
+          renderItem={({item}) => (
             <TouchableOpacity onPress={() => handleImagePress(item)}>
-              <Image source={{ uri: item }} style={styles.previewImage} />
+              <Image source={{uri: item}} style={styles.previewImage} />
             </TouchableOpacity>
           )}
           keyExtractor={(item, index) => index.toString()}
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.previewContainer}
         />
-        <Text style={styles.heading}>Amenities</Text>
+        <Text style={styles.heading}>Activities</Text>
         <FlatList
           horizontal
-          data={amenities}
-          renderItem={({ item }) => (
-            <View style={styles.amenityCard}>
-              <Text style={styles.amenityText}>{item.name}</Text>
+          data={activities}
+          renderItem={({item}) => (
+            <View style={styles.activityCard}>
+              <Text style={styles.activityText}>{item}</Text>
             </View>
           )}
-          keyExtractor={(item) => item.id}
+          keyExtractor={item => item.id}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.amenitiesContainer}
+          contentContainerStyle={styles.activitiesContainer}
         />
         <View>
           <Text style={styles.heading}>Map</Text>
@@ -98,9 +86,12 @@ const DetailsScreen = () => {
       </ScrollView>
       <Modal visible={modalVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>
-          <TouchableOpacity style={styles.modalBackground} onPress={closeModal} />
+          <TouchableOpacity
+            style={styles.modalBackground}
+            onPress={closeModal}
+          />
           <View style={styles.modalContent}>
-            <Image source={{ uri: selectedImage }} style={styles.fullImage} />
+            <Image source={{uri: selectedImage}} style={styles.fullImage} />
           </View>
         </View>
       </Modal>
@@ -179,16 +170,16 @@ const styles = StyleSheet.create({
     borderRadius: 9,
     marginRight: 9,
   },
-  amenitiesContainer: {
+  activitiesContainer: {
     paddingVertical: 16,
   },
-  amenityCard: {
+  activityCard: {
     backgroundColor: COLORS.SECONDARY,
     padding: 10,
     marginRight: 9,
     borderRadius: 8,
   },
-  amenityText: {
+  activityText: {
     fontSize: 14,
     color: COLORS.TEXTSECONDARY,
   },

@@ -27,9 +27,6 @@ const Search = () => {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleSearch = () => {
-    console.log('Query:', query);
-    console.log('State:', selectedState);
-    console.log('Filters:', filters);
     Alert.alert(
       'Search Filters',
       `Query: ${query}\nState: ${selectedState}\nFilters: ${JSON.stringify(
