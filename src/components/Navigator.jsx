@@ -4,7 +4,6 @@ import {COLORS} from '../constants/colors.constant';
 import Arrow from '../assets/icons/rightArrow.svg';
 
 const Navigator = ({name = 'name'}) => {
-  console.log(name);
 
   return (
     <View style={styles.container}>

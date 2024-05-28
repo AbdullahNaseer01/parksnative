@@ -7,7 +7,7 @@ import MainCardList from '../../components/MainCardList';
 import DetailsCardList from '../../components/DetailsCardList';
 
 const HomeScreen = () => {
-  const [selectedState, setSelectedState] = useState('AK'); // Initial default state code
+  const [selectedState, setSelectedState] = useState('AK');
 
   return (
     <View style={styles.container}>

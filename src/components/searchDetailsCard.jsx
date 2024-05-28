@@ -3,28 +3,43 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {COLORS} from '../constants/colors.constant';
 import Location from '../assets/icons/locationGreen.svg';
 import {useNavigation} from '@react-navigation/native';
+import {dataMapping, getDefaultImageUrl} from '../constants/dataMapping';
 
-const DetailsCard = ({data}) => {
+const getNestedProperty = (obj, path, defaultValue) => {
+  return (
+    path.split('.').reduce((o, p) => {
+      if (o && p.includes('[')) {
+        const [key, index] = p.split(/\[|\]/).filter(Boolean);
+        return o[key] ? o[key][index] : defaultValue;
+      }
+      return o ? o[p] : defaultValue;
+    }, obj) || defaultValue
+  );
+};
+
+const SearchDetailsCard = ({data, dataType}) => {
   const navigation = useNavigation();
 
-  // Safeguard against null or undefined data
-  const imageUrl = data?.images?.[0]?.url
-    ? data.images[0].url
-    : 'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg';
-
-  const name = data?.name || 'No name available';
-  const city = data?.addresses?.[0]?.city || 'Unknown location';
-  const description = data?.description || 'No description available';
+  const mapping = dataMapping[dataType] || {};
+  const imageUrl = getNestedProperty(
+    data,
+    mapping.imageUrl,
+    getDefaultImageUrl(),
+  );
+  const name = getNestedProperty(data, mapping.name, 'No name available');
+  const city = getNestedProperty(data, mapping.city, 'Unknown location');
+  const description = getNestedProperty(
+    data,
+    mapping.description,
+    'No description available',
+  );
 
   return (
     <TouchableOpacity
       style={styles.container}
       onPress={() => navigation.navigate('detailsScreen', {data})}>
       <View style={styles.imageContainer}>
-        <Image
-          source={{uri: imageUrl}}
-          style={styles.image}
-        />
+        <Image source={{uri: imageUrl}} style={styles.image} />
       </View>
       <View style={styles.detailsContainer}>
         <Text style={styles.heading} numberOfLines={1} ellipsizeMode="tail">
@@ -32,7 +47,9 @@ const DetailsCard = ({data}) => {
         </Text>
         <View style={styles.locationContainer}>
           <Location width={15} height={15} />
-          <Text style={styles.locationText}>{city}</Text>
+          <Text style={styles.locationText} numberOfLines={1}>
+            {city}
+          </Text>
         </View>
         <Text style={styles.description} numberOfLines={2} ellipsizeMode="tail">
           {description}
@@ -42,7 +59,7 @@ const DetailsCard = ({data}) => {
   );
 };
 
-export default DetailsCard;
+export default SearchDetailsCard;
 
 const styles = StyleSheet.create({
   container: {
@@ -91,4 +108,3 @@ const styles = StyleSheet.create({
     color: COLORS.TEXTSECONDARY,
   },
 });
-

@@ -9,6 +9,7 @@ import lessonPlansReducer from './slices/lessonPlansSlice';
 import topicsReducer from './slices/topicsSlice';
 import amenitiesReducer from './slices/amenitiesSlice';
 import thingsToDoReducer from './slices/thingsToDoSlice';
+import searchParksReducer from './slices/searchParksSlice';
 
 export const store = configureStore({
   reducer: {
@@ -22,5 +23,6 @@ export const store = configureStore({
     topics: topicsReducer,
     amenities: amenitiesReducer,
     thingsToDo: thingsToDoReducer,
+    searchParks: searchParksReducer,
   },
 });

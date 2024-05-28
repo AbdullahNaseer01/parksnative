@@ -1,9 +1,12 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import axios from 'axios';
 
 // Define initial state
 const initialState = {
-  lessonPlans: [],
+  lessonPlans: {
+    data: [],
+    total: 0,
+  },
   lessonPlanDetails: null, // New state to store lesson plan details
   loading: false,
   error: null,
@@ -11,38 +14,39 @@ const initialState = {
 
 // Define async thunk for fetching lesson plans
 export const fetchLessonPlans = createAsyncThunk(
-  "lessonPlans/fetchLessonPlans",
-  async (params) => {
+  'lessonPlans/fetchLessonPlans',
+  async params => {
     try {
       const options = {
-        method: "GET",
-        url: "https://developer.nps.gov/api/v1/lessonplans", // Updated endpoint to lesson plans
+        method: 'GET',
+        url: 'https://developer.nps.gov/api/v1/lessonplans', // Updated endpoint to lesson plans
         params: params,
         headers: {
-          "X-Api-Key": "gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi", // Keep the same API key
+          'X-Api-Key': 'gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi', // Keep the same API key
         },
       };
 
       const response = await axios.request(options);
-      return response.data;
+      return {data: response.data, params};
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 export const fetchLessonPlanDetails = createAsyncThunk(
-  "lessonPlans/fetchLessonPlanDetails",
-  async (lessonPlanId) => { // Change params to lessonPlanId to fetch details of a specific lesson plan
+  'lessonPlans/fetchLessonPlanDetails',
+  async lessonPlanId => {
+    // Change params to lessonPlanId to fetch details of a specific lesson plan
     try {
       const options = {
-        method: "GET",
+        method: 'GET',
         url: `https://developer.nps.gov/api/v1/lessonplans/${lessonPlanId}`, // Updated endpoint to lesson plans with lessonPlanId
         params: {
           // Add any additional params if needed
         },
         headers: {
-          "X-Api-Key": "gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi", // Keep the same API key
+          'X-Api-Key': 'gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi', // Keep the same API key
         },
       };
 
@@ -51,29 +55,41 @@ export const fetchLessonPlanDetails = createAsyncThunk(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 // Define lesson plans slice
 const lessonPlansSlice = createSlice({
-  name: "lessonPlans",
+  name: 'lessonPlans',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
+  reducers: {
+    clearLessonPlansData: state => {
+      state.lessonPlans = {
+        data: [],
+        total: 0,
+      };
+    },
+  },
+  extraReducers: builder => {
     builder
-      .addCase(fetchLessonPlans.pending, (state) => {
+      .addCase(fetchLessonPlans.pending, state => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchLessonPlans.fulfilled, (state, action) => {
         state.loading = false;
-        state.lessonPlans = action.payload;
+        // Append new lesson plans to the existing data
+        state.lessonPlans.data = [
+          ...state.lessonPlans.data,
+          ...action.payload.data.data,
+        ];
+        state.lessonPlans.total = action.payload.data.total;
       })
       .addCase(fetchLessonPlans.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(fetchLessonPlanDetails.pending, (state) => {
+      .addCase(fetchLessonPlanDetails.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -88,4 +104,5 @@ const lessonPlansSlice = createSlice({
   },
 });
 
+export const {clearLessonPlansData} = lessonPlansSlice.actions;
 export default lessonPlansSlice.reducer;

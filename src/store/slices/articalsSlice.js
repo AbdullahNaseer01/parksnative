@@ -1,9 +1,11 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
+import {createSlice, createAsyncThunk} from '@reduxjs/toolkit';
+import axios from 'axios';
 
 // Define initial state
 const initialState = {
-  data: [],
+  data: {
+    data: {data: [], total: 0},
+  },
   articleDetails: null, // New state to store article details
   loading: false,
   error: null,
@@ -11,45 +13,40 @@ const initialState = {
 
 // Define async thunk for fetching articles
 export const fetchArticles = createAsyncThunk(
-  "articles/fetchArticles",
-  async (params) => {
+  'articles/fetchArticles',
+  async params => {
     try {
       const options = {
-        method: "GET",
-        url: "https://developer.nps.gov/api/v1/articles",
+        method: 'GET',
+        url: 'https://developer.nps.gov/api/v1/articles',
         params: params,
         headers: {
-          "X-Api-Key": "gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi",
+          'X-Api-Key': 'gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi',
         },
       };
 
       const response = await axios.request(options);
-      const paramsData = params;
-      const finalResponse = {
-        data: response.data,
-        params: paramsData,
-      };
-      console.log(finalResponse);
-      return finalResponse;
+
+      return {data: response.data, params};
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 export const fetchArticleDetails = createAsyncThunk(
-  "articles/fetchArticleDetails", // Corrected action type
-  async (articleId) => {
+  'articles/fetchArticleDetails', // Corrected action type
+  async articleId => {
     // Changed params to articleId to fetch details of a specific article
     try {
       const options = {
-        method: "GET",
+        method: 'GET',
         url: `https://developer.nps.gov/api/v1/articles?id=${articleId}`, // Use correct URL path for article details
         params: {
           // Add any additional params if needed
         },
         headers: {
-          "X-Api-Key": "gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi",
+          'X-Api-Key': 'gSwKu55KzwcQZdpTNQqqkG6t0m9orXYbFff25MFi',
         },
       };
 
@@ -58,29 +55,40 @@ export const fetchArticleDetails = createAsyncThunk(
     } catch (error) {
       throw error;
     }
-  }
+  },
 );
 
 // Define articles slice
 const articlesSlice = createSlice({
-  name: "articles",
+  name: 'articles',
   initialState,
-  reducers: {},
-  extraReducers: (builder) => {
+  reducers: {
+    clearArticlesData: state => {
+      state.data = {
+        data: {data: [], total: 0},
+      };
+    },
+  },
+  extraReducers: builder => {
     builder
-      .addCase(fetchArticles.pending, (state) => {
+      .addCase(fetchArticles.pending, state => {
         state.loading = true;
         state.error = null;
       })
       .addCase(fetchArticles.fulfilled, (state, action) => {
         state.loading = false;
-        state.data = action.payload;
+        // Append new articles to the existing data
+        state.data.data.data = [
+          ...state.data.data.data,
+          ...action.payload.data.data,
+        ];
+        state.data.data.total = action.payload.data.total;
       })
       .addCase(fetchArticles.rejected, (state, action) => {
         state.loading = false;
         state.error = action.error.message;
       })
-      .addCase(fetchArticleDetails.pending, (state) => {
+      .addCase(fetchArticleDetails.pending, state => {
         // Add pending case for fetchArticleDetails
         state.loading = true;
         state.error = null;
@@ -98,4 +106,5 @@ const articlesSlice = createSlice({
   },
 });
 
+export const {clearArticlesData} = articlesSlice.actions;
 export default articlesSlice.reducer;

@@ -12,10 +12,6 @@ const MainCardList = ({selectedState}) => {
   const parks = useSelector(state => state?.parks?.data?.data?.data || []);
   const loading = useSelector(state => state?.parks?.loading);
 
-  useEffect(() => {
-    console.log('parks from main card list', parks);
-  }, [parks]);
-
   return (
     <View style={styles.container}>
       {loading ? (

@@ -16,10 +16,10 @@ import Location from '../../assets/icons/locationGreen.svg';
 const DetailsScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
-  const {park} = route.params;
+  const data = route.params.data;
 
-  const previewImages = park?.images?.map(image => image.url);
-  const activities = park?.activities?.map(activity => activity.name);
+  const previewImages = data?.images?.map(image => image.url);
+  const activities = data?.activities?.map(activity => activity.name);
 
   const handleImagePress = image => {
     setSelectedImage(image);
@@ -30,12 +30,16 @@ const DetailsScreen = ({route}) => {
     setModalVisible(false);
   };
 
+  useEffect(() => {
+    console.log(data, ' data from details screen');
+  }, [data]);
+
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: park?.images[0]?.url || 'https://via.placeholder.com/150',
+            uri: data?.images[0]?.url || 'https://via.placeholder.com/150',
           }}
           style={styles.image}
           resizeMode="cover"
@@ -48,10 +52,10 @@ const DetailsScreen = ({route}) => {
         <Text style={styles.heading}>Name</Text>
         <View style={styles.locationContainer}>
           <Location width={15} height={15} />
-          <Text style={styles.locationText}>{park.addresses[0].city}</Text>
+          <Text style={styles.locationText}>{data?.addresses[0]?.city}</Text>
         </View>
         <Text style={styles.detailsText}>
-          {park?.description || 'Description not available'}
+          {data?.description || 'Description not available'}
         </Text>
         <Text style={styles.heading}>Preview</Text>
         <FlatList
