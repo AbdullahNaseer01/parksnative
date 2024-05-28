@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,6 @@ import {
   TouchableOpacity,
   Alert,
   ScrollView,
-  KeyboardAvoidingView,
 } from 'react-native';
 import SearchIcon from '../../assets/icons/search.svg';
 import FilterIcon from '../../assets/icons/filter.svg';
@@ -16,27 +15,14 @@ import CustomFilterModal from '../../components/FilterModal';
 const Search = () => {
   const [query, setQuery] = useState('');
   const [selectedState, setSelectedState] = useState('');
-  const [filters, setFilters] = useState({
-    articles: false,
-    lessonPlans: false,
-    thingsToDo: false,
-    campGround: false,
-    events: false,
-    parks: false,
-  });
+  const [selectedFilter, setSelectedFilter] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleSearch = () => {
     Alert.alert(
       'Search Filters',
-      `Query: ${query}\nState: ${selectedState}\nFilters: ${JSON.stringify(
-        filters,
-      )}`,
+      `Query: ${query}\nState: ${selectedState}\nFilter: ${selectedFilter}`,
     );
-  };
-
-  const toggleFilter = filter => {
-    setFilters({...filters, [filter]: !filters[filter]});
   };
 
   const handleApplyFilters = () => {
@@ -57,15 +43,16 @@ const Search = () => {
         />
         <TouchableOpacity
           style={styles.filterIconContainer}
-          onPress={() => setModalVisible(true)}>
+          onPress={() => setModalVisible(true)}
+        >
           <FilterIcon width={20} height={20} color="gray" />
         </TouchableOpacity>
       </View>
       <CustomFilterModal
         modalVisible={modalVisible}
         setModalVisible={setModalVisible}
-        filters={filters}
-        toggleFilter={toggleFilter}
+        selectedFilter={selectedFilter}
+        setSelectedFilter={setSelectedFilter}
         selectedState={selectedState}
         setSelectedState={setSelectedState}
         handleApplyFilters={handleApplyFilters}

@@ -7,20 +7,27 @@ import {
   Modal,
   TouchableWithoutFeedback,
   ScrollView,
-  Image,
 } from 'react-native';
-import { COLORS } from '../constants/colors.constant'; // 
-import { states } from '../assets/icons/states/states';
+import {COLORS} from '../constants/colors.constant';
+import {states} from '../assets/icons/states/states';
 
 const CustomFilterModal = ({
   modalVisible,
   setModalVisible,
-  filters,
-  toggleFilter,
+  selectedFilter,
+  setSelectedFilter,
   selectedState,
   setSelectedState,
   handleApplyFilters,
 }) => {
+  const filterOptions = [
+    {label: 'Articles', value: 'articles'},
+    {label: 'Lesson Plans', value: 'lessonPlans'},
+    {label: 'Camp Ground', value: 'campGround'},
+    {label: 'Events', value: 'events'},
+    {label: 'Parks', value: 'parks'},
+  ];
+
   return (
     <Modal
       animationType="slide"
@@ -28,13 +35,11 @@ const CustomFilterModal = ({
       visible={modalVisible}
       onRequestClose={() => {
         setModalVisible(!modalVisible);
-      }}
-    >
+      }}>
       <TouchableOpacity
         style={styles.modalBackground}
         activeOpacity={1}
-        onPressOut={() => setModalVisible(false)}
-      >
+        onPressOut={() => setModalVisible(false)}>
         <TouchableWithoutFeedback>
           <View style={styles.modalContainer}>
             <View style={styles.header}>
@@ -42,48 +47,45 @@ const CustomFilterModal = ({
             </View>
             <ScrollView contentContainerStyle={styles.scrollViewContent}>
               <View style={styles.filterContainer}>
-                <Text style={styles.label}>Select Filters:</Text>
+                <Text style={styles.label}>Select Filter:</Text>
                 <View style={styles.filterButtonsContainer}>
-                  {Object.keys(filters).map((key) => (
+                  {filterOptions.map(option => (
                     <TouchableOpacity
-                      key={key}
+                      key={option.value}
                       style={[
                         styles.filterButton,
-                        filters[key] && styles.filterButtonSelected,
+                        selectedFilter === option.value &&
+                          styles.filterButtonSelected,
                       ]}
-                      onPress={() => toggleFilter(key)}
-                    >
+                      onPress={() => setSelectedFilter(option.value)}>
                       <Text
                         style={[
                           styles.filterButtonText,
-                          filters[key] && styles.filterButtonTextSelected,
-                        ]}
-                      >
-                        {key.charAt(0).toUpperCase() +
-                          key.slice(1).replace(/([A-Z])/g, ' $1')}
+                          selectedFilter === option.value &&
+                            styles.filterButtonTextSelected,
+                        ]}>
+                        {option.label}
                       </Text>
                     </TouchableOpacity>
                   ))}
                 </View>
                 <Text style={styles.label}>Select State:</Text>
                 <View style={styles.filterButtonsContainer}>
-                  {states.map((state) => (
+                  {states.map(state => (
                     <TouchableOpacity
                       key={state.name}
                       style={[
                         styles.filterButton,
-                        selectedState === state.name && styles.filterButtonSelected,
+                        selectedState === state.code &&
+                          styles.filterButtonSelected,
                       ]}
-                      onPress={() => setSelectedState(state.name)}
-                    >
-                        {/* {Flag = state?.flag}
-                      {<Flag width={15} height={15} />} */}
+                      onPress={() => setSelectedState(state.code)}>
                       <Text
                         style={[
                           styles.filterButtonText,
-                          selectedState === state.name && styles.filterButtonTextSelected,
-                        ]}
-                      >
+                          selectedState === state.code &&
+                            styles.filterButtonTextSelected,
+                        ]}>
                         {state.name}
                       </Text>
                     </TouchableOpacity>
@@ -92,8 +94,7 @@ const CustomFilterModal = ({
               </View>
               <TouchableOpacity
                 style={styles.applyButton}
-                onPress={handleApplyFilters}
-              >
+                onPress={handleApplyFilters}>
                 <Text style={styles.applyButtonText}>Apply Filters</Text>
               </TouchableOpacity>
             </ScrollView>
@@ -163,10 +164,6 @@ const styles = StyleSheet.create({
   },
   filterButtonTextSelected: {
     color: 'white',
-  },
-  flagIcon: {
-    width: 20,
-    height: 20,
   },
   applyButton: {
     backgroundColor: COLORS.PRIMARY,
