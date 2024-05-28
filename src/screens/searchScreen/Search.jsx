@@ -53,7 +53,7 @@ const Search = () => {
           placeholder="Enter your query"
           value={query}
           onChangeText={setQuery}
-          onSubmitEditing={handleSearch} 
+          onSubmitEditing={handleSearch}
         />
         <TouchableOpacity
           style={styles.filterIconContainer}

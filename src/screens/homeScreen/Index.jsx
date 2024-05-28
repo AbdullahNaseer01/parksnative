@@ -17,7 +17,7 @@ const HomeScreen = () => {
         selectedState={selectedState}
         setSelectedState={setSelectedState}
       />
-      <MainCardList />
+      <MainCardList selectedState={selectedState} />
       <Navigator name={'Popular Destinations'} />
       <DetailsCardList selectedState={selectedState} />
     </View>

@@ -1,49 +1,40 @@
-// MainCardList.js
-import React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import React, {useEffect, useRef} from 'react';
+import {ScrollView, StyleSheet, View, Animated} from 'react-native';
 import MainCard from './MainCard';
+import {useSelector} from 'react-redux';
+import {COLORS} from '../constants/colors.constant';
+import SkeletonLoading from './loaders/mainCardSkeleton';
 
-// data.js
-const locations = [
-  {
-    name: 'Rinjani Mountain',
-    location: 'Indonesia',
-    image:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    name: 'Mount Fuji',
-    location: 'Japan',
-    image:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  {
-    name: 'Grand Canyon',
-    location: 'USA',
-    image:
-      'https://img.freepik.com/free-photo/grunge-black-concrete-textured-background_53876-124541.jpg',
-  },
-  // Add more locations as needed
-];
+// SkeletonLoading.js
 
-const MainCardList = () => {
+// MainCardList.js
+const MainCardList = ({selectedState}) => {
+  const parks = useSelector(state => state?.parks?.data?.data?.data || []);
+  const loading = useSelector(state => state?.parks?.loading);
+
+  useEffect(() => {
+    console.log('parks from main card list', parks);
+  }, [parks]);
+
   return (
     <View style={styles.container}>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {locations.map((location, index) => (
-          <MainCard
-            key={index}
-            name={location?.name}
-            location={location?.location}
-            imageURL={location?.image}
-          />
-        ))}
-      </ScrollView>
+      {loading ? (
+        <SkeletonLoading /> // Render skeleton loading when loading is true
+      ) : (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {parks?.map((park, index) => (
+            <MainCard
+              key={index}
+              name={park?.name}
+              location={park?.addresses[0]?.city}
+              imageURL={park?.images[0]?.url}
+            />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 };
-
-export default MainCardList;
 
 const styles = StyleSheet.create({
   container: {
@@ -52,3 +43,5 @@ const styles = StyleSheet.create({
     marginLeft: 16,
   },
 });
+
+export default MainCardList;

@@ -48,7 +48,7 @@ const DetailsScreen = ({route}) => {
         <Text style={styles.heading}>Name</Text>
         <View style={styles.locationContainer}>
           <Location width={15} height={15} />
-          <Text style={styles.locationText}>Location here</Text>
+          <Text style={styles.locationText}>{park.addresses[0].city}</Text>
         </View>
         <Text style={styles.detailsText}>
           {park?.description || 'Description not available'}
