@@ -1,9 +1,10 @@
-import {StyleSheet, Text, View} from 'react-native';
+import { StyleSheet } from 'react-native';
 import React from 'react';
 import {Provider} from 'react-redux';
 import {store} from './store/store';
 import Navigation from './navigation/Navigation';
 import AuthInitializer from './utility/authInitializer';
+
 
 const App = () => {
   return (
