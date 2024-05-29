@@ -10,7 +10,7 @@ import auth from '@react-native-firebase/auth';
 import Login from '../screens/authScreens/LoginScreen';
 import Register from '../screens/authScreens/RegisterScreen';
 import HomeScreen from '../screens/homeScreen/Index';
-import Profile from '../screens/profileScreens/Profile';
+
 import WishList from '../screens/wishlistScreen/WishList';
 import Search from '../screens/searchScreen/Search';
 import Calender from '../screens/calender/Calender';
@@ -25,6 +25,7 @@ import CalendarIcon from '../assets/icons/calendarIcon.svg';
 import ProfileIcon from '../assets/icons/profileIcon.svg';
 import {COLORS} from '../constants/colors.constant';
 import ForgotScreen from '../screens/authScreens/ForgotPassword';
+import UserProfileScreen from '../screens/profileScreens/UserProfile';
 
 const Tab = createBottomTabNavigator();
 const Stack = createNativeStackNavigator();
@@ -76,7 +77,7 @@ const TabNavigator = () => {
       />
       <Tab.Screen
         name="Profile"
-        component={Profile}
+        component={UserProfileScreen}
         options={{headerShown: false}}
       />
     </Tab.Navigator>
