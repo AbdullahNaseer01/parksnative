@@ -21,38 +21,24 @@ const DetailsCardSkeleton = () => {
   // Start animation loop
   Animated.loop(sequence).start();
 
+  const skeletonCards = Array(10).fill(0);
+
   return (
     <View style={styles.container}>
-      <Animated.View
-        style={[
-          styles.skeletonCard,
-          {
-            opacity: animValue.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.5, 1],
-            }),
-          },
-        ]}></Animated.View>
-      <Animated.View
-        style={[
-          styles.skeletonCard,
-          {
-            opacity: animValue.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.5, 1],
-            }),
-          },
-        ]}></Animated.View>
-      <Animated.View
-        style={[
-          styles.skeletonCard,
-          {
-            opacity: animValue.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0.5, 1],
-            }),
-          },
-        ]}></Animated.View>
+      {skeletonCards.map((_, index) => (
+        <Animated.View
+          key={index}
+          style={[
+            styles.skeletonCard,
+            {
+              opacity: animValue.interpolate({
+                inputRange: [0, 1],
+                outputRange: [0.5, 1],
+              }),
+            },
+          ]}
+        />
+      ))}
     </View>
   );
 };

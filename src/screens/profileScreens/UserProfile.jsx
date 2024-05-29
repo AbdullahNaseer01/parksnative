@@ -41,11 +41,11 @@ const UserProfileScreen = () => {
         <Image
           source={{
             uri: 'https://cdn-icons-png.flaticon.com/512/3135/3135715.png',
-          }} // Replace with your image URL
+          }}
           style={styles.profileImage}
         />
-        <Text style={styles.name}>John Doe</Text>
-        <Text style={styles.profession}>Software Engineer</Text>
+        <Text style={styles.name}> {user?.displayName}</Text>
+        <Text style={styles.profession}>{user?.email}</Text>
       </View>
 
       <View style={styles.menuContainer}>
@@ -103,23 +103,22 @@ const UserProfileScreen = () => {
         transparent={true}
         animationType="slide"
         visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
+        onRequestClose={() => setModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>Confirm Logout</Text>
-            <Text style={styles.modalMessage}>Are you sure you want to log out?</Text>
+            <Text style={styles.modalMessage}>
+              Are you sure you want to log out?
+            </Text>
             <View style={styles.modalButtons}>
               <TouchableOpacity
                 style={{...styles.modalButton, backgroundColor: COLORS.PRIMARY}}
-                onPress={() => setModalVisible(false)}
-              >
+                onPress={() => setModalVisible(false)}>
                 <Text style={{color: COLORS.WHITE}}>Cancel</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.modalButton}
-                onPress={handleSignOut}
-              >
+                onPress={handleSignOut}>
                 <Text style={{color: COLORS.WHITE}}>Logout</Text>
               </TouchableOpacity>
             </View>
