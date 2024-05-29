@@ -199,7 +199,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: 'white',
-    paddingHorizontal: 16,
     paddingTop: 20,
   },
   searchContainer: {
@@ -208,6 +207,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#EFEFEF',
     borderRadius: 25,
     paddingHorizontal: 10,
+    marginHorizontal: 16,
     marginBottom: 20,
   },
   input: {

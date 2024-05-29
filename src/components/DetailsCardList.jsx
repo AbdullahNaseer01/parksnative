@@ -1,12 +1,18 @@
-import React, { useEffect, useState, useRef } from 'react';
-import { StyleSheet, View, ScrollView, Text, TouchableOpacity } from 'react-native';
+import React, {useEffect, useState, useRef} from 'react';
+import {
+  StyleSheet,
+  View,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+} from 'react-native';
 import DetailsCard from './DetailsCard';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchParks, clearParksData } from '../store/slices/parksSlice';
-import { COLORS } from '../constants/colors.constant';
+import {useDispatch, useSelector} from 'react-redux';
+import {fetchParks, clearParksData} from '../store/slices/parksSlice';
+import {COLORS} from '../constants/colors.constant';
 import SkeletonLoadingDetailsCard from './loaders/DetailsCardSkeleton'; // Import the skeleton loading component
 
-const DetailsList = ({ selectedState }) => {
+const DetailsList = ({selectedState}) => {
   const dispatch = useDispatch();
   const parks = useSelector(state => state?.parks?.data?.data?.data || []);
   const totalPages = useSelector(state => state?.parks?.data?.data?.total || 0);
@@ -22,7 +28,7 @@ const DetailsList = ({ selectedState }) => {
 
   useEffect(() => {
     console.log('total', totalPages);
-   }, []);
+  }, []);
 
   const previousState = previousStateRef.current;
 

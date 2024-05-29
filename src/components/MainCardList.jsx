@@ -4,18 +4,20 @@ import MainCard from './MainCard';
 import {useSelector} from 'react-redux';
 import {COLORS} from '../constants/colors.constant';
 import SkeletonLoading from './loaders/mainCardSkeleton';
+import {useNavigation} from '@react-navigation/native';
 
 // SkeletonLoading.js
 
 // MainCardList.js
 const MainCardList = ({selectedState}) => {
+  const navigation = useNavigation();
   const parks = useSelector(state => state?.parks?.data?.data?.data || []);
   const loading = useSelector(state => state?.parks?.loading);
 
   return (
     <View style={styles.container}>
       {loading ? (
-        <SkeletonLoading /> // Render skeleton loading when loading is true
+        <SkeletonLoading />
       ) : (
         <ScrollView horizontal showsHorizontalScrollIndicator={false}>
           {parks?.map((park, index) => (
@@ -24,6 +26,13 @@ const MainCardList = ({selectedState}) => {
               name={park?.name}
               location={park?.addresses[0]?.city}
               imageURL={park?.images[0]?.url}
+              data={park}
+              handlePress={() =>
+                navigation.navigate('detailsScreen', {
+                  data: park,
+                  dataType: 'parks',
+                })
+              }
             />
           ))}
         </ScrollView>

@@ -46,10 +46,6 @@ const DetailsScreen = ({route}) => {
     }
   };
 
-  // useEffect(() => {
-  //   console.log(user, '<<<<<<<<<<<<<============== user from details screen');
-  // }, [user]);
-
   const renderDetails = () => {
     switch (dataType) {
       case 'parks':
@@ -91,7 +87,6 @@ const DetailsScreen = ({route}) => {
                 />
               </View>
             </View>
-            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'articles':
@@ -116,7 +111,6 @@ const DetailsScreen = ({route}) => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.activitiesContainer}
             />
-            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'campGround':
@@ -136,7 +130,6 @@ const DetailsScreen = ({route}) => {
               <Text style={styles.heading}>Map</Text>
               <View style={styles.mapContainer}></View>
             </View>
-            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'events':
@@ -148,7 +141,6 @@ const DetailsScreen = ({route}) => {
             <Text style={styles.detailsText}>{data?.date}</Text>
             <Text style={styles.heading}>Description</Text>
             <Text style={styles.detailsText}>{data?.description}</Text>
-            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'lessonPlans':
@@ -160,7 +152,6 @@ const DetailsScreen = ({route}) => {
             <Text style={styles.detailsText}>{data?.gradeLevel}</Text>
             <Text style={styles.heading}>Subject</Text>
             <Text style={styles.detailsText}>{data?.subject[0] || ''}</Text>
-            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       default:

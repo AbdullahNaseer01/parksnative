@@ -1,4 +1,3 @@
-// dataMappings.js
 export const dataMapping = {
   articles: {
     imageUrl: 'images[0].url',

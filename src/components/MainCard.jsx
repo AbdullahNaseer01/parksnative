@@ -1,11 +1,19 @@
 import React from 'react';
-import {StyleSheet, Text, View, ImageBackground, Image} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  View,
+  ImageBackground,
+  TouchableOpacity,
+} from 'react-native';
 import Location from '../assets/icons/location.svg';
 import {COLORS} from '../constants/colors.constant';
 
-const MainCard = ({name, location, imageURL}) => {
+const MainCard = ({name, location, imageURL, styleProp, handlePress}) => {
   return (
-    <View style={styles.container}>
+    <TouchableOpacity
+      onPress={handlePress}
+      style={StyleSheet.flatten([styles.container, styleProp])}>
       {imageURL ? (
         <ImageBackground
           source={{uri: imageURL}}
@@ -24,7 +32,7 @@ const MainCard = ({name, location, imageURL}) => {
           <Text style={styles.placeholderText}>No Image Available</Text>
         </View>
       )}
-    </View>
+    </TouchableOpacity>
   );
 };
 

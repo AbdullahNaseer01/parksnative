@@ -12,15 +12,14 @@ const MainNavigator = ({data, dataType}) => {
   const dispatch = useDispatch();
   const user = useSelector(state => state.auth.user);
 
-  const isItemInWishlist = user?.wishlist?.some(item => item.id === data.id);
+  const isItemInWishlist = user?.wishlist?.some(item => item?.data?.id === data.id);
   const handleWishlistPress = () => {
     if (isItemInWishlist) {
       dispatch(removeFromWishlist(data.id));
     } else {
-      dispatch(addToWishlist(data));
+      dispatch(addToWishlist({data, dataType: dataType}));
     }
   };
-
   return (
     <View style={styles.container}>
       <TouchableOpacity
