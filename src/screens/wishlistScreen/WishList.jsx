@@ -11,4 +11,6 @@ const WishList = () => {
 
 export default WishList
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  
+})

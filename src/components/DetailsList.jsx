@@ -29,7 +29,12 @@ const DetailsCardList = ({
     <ScrollView>
       <View style={styles.container}>
         {data?.map((item, index) => (
-          <SearchDetailsCard key={index} data={item} dataType={dataType} onItemPress={onItemPress} />
+          <SearchDetailsCard
+            key={index}
+            data={item}
+            dataType={dataType}
+            onItemPress={onItemPress}
+          />
         ))}
         {hasMore && (
           <TouchableOpacity

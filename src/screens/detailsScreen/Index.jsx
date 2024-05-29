@@ -12,12 +12,17 @@ import {
 import MainNavigator from '../../components/MainNavigator';
 import {COLORS} from '../../constants/colors.constant';
 import Location from '../../assets/icons/locationGreen.svg';
-
+import MapView from 'react-native-maps';
+import {useDispatch, useSelector} from 'react-redux';
+import Button from '../../components/Button';
+import {addToWishlist, removeFromWishlist} from '../../store/slices/authSlice';
 const DetailsScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const data = route.params.data;
   const dataType = route.params.dataType;
+  const user = useSelector(state => state.auth.user);
+  const dispatch = useDispatch();
 
   const previewImages = data?.images?.map(image => image.url);
   const activities = data?.activities?.map(activity => activity.name);
@@ -32,9 +37,18 @@ const DetailsScreen = ({route}) => {
     setModalVisible(false);
   };
 
-  useEffect(() => {
-    console.log(data, '<<<<<<<<<<<<<============== data from details screen');
-  }, [data]);
+  const isItemInWishlist = user?.wishlist.includes(data);
+  const handleWishlistPress = () => {
+    if (isItemInWishlist) {
+      dispatch(removeFromWishlist(data));
+    } else {
+      dispatch(addToWishlist(data));
+    }
+  };
+
+  // useEffect(() => {
+  //   console.log(user, '<<<<<<<<<<<<<============== user from details screen');
+  // }, [user]);
 
   const renderDetails = () => {
     switch (dataType) {
@@ -66,8 +80,18 @@ const DetailsScreen = ({route}) => {
             />
             <View>
               <Text style={styles.heading}>Map</Text>
-              <View style={styles.mapContainer}></View>
+              <View style={styles.mapContainer}>
+                <MapView
+                  initialRegion={{
+                    latitude: 37.78825,
+                    longitude: -122.4324,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  }}
+                />
+              </View>
             </View>
+            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'articles':
@@ -92,6 +116,7 @@ const DetailsScreen = ({route}) => {
               showsHorizontalScrollIndicator={false}
               contentContainerStyle={styles.activitiesContainer}
             />
+            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'campGround':
@@ -111,6 +136,7 @@ const DetailsScreen = ({route}) => {
               <Text style={styles.heading}>Map</Text>
               <View style={styles.mapContainer}></View>
             </View>
+            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'events':
@@ -122,6 +148,7 @@ const DetailsScreen = ({route}) => {
             <Text style={styles.detailsText}>{data?.date}</Text>
             <Text style={styles.heading}>Description</Text>
             <Text style={styles.detailsText}>{data?.description}</Text>
+            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       case 'lessonPlans':
@@ -133,6 +160,7 @@ const DetailsScreen = ({route}) => {
             <Text style={styles.detailsText}>{data?.gradeLevel}</Text>
             <Text style={styles.heading}>Subject</Text>
             <Text style={styles.detailsText}>{data?.subject[0] || ''}</Text>
+            <Button text={'add to wishlist'} onPress={handleWishlistPress} />
           </>
         );
       default:
@@ -156,7 +184,7 @@ const DetailsScreen = ({route}) => {
           resizeMode="cover"
         />
         <View style={styles.navigator}>
-          <MainNavigator />
+          <MainNavigator data={data} dataType={dataType} />
         </View>
       </View>
       <ScrollView style={styles.detailsContainer}>
