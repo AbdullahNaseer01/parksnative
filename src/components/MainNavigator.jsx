@@ -1,11 +1,26 @@
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import React from 'react';
-import LeftfArrow from '../assets/icons/leftArrow.svg';
+import React, {useEffect} from 'react';
+import LeftArrow from '../assets/icons/leftArrow.svg';
 import Heart from '../assets/icons/heart.svg';
+import FilledHeart from '../assets/icons/heartIcon'; // Import filled heart icon
 import {useNavigation} from '@react-navigation/native';
+import {useDispatch, useSelector} from 'react-redux';
+import {addToWishlist, removeFromWishlist} from '../store/slices/authSlice';
 
-const MainNavigator = () => {
+const MainNavigator = ({data, dataType}) => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+  const user = useSelector(state => state.auth.user);
+
+  const isItemInWishlist = user?.wishlist?.some(item => item.id === data.id);
+  const handleWishlistPress = () => {
+    if (isItemInWishlist) {
+      dispatch(removeFromWishlist(data.id));
+    } else {
+      dispatch(addToWishlist(data));
+    }
+  };
+
   return (
     <View style={styles.container}>
       <TouchableOpacity
@@ -13,10 +28,14 @@ const MainNavigator = () => {
           navigation.goBack();
         }}
         style={styles.button}>
-        <LeftfArrow width={18} hight={18} />
+        <LeftArrow width={18} height={18} />
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
-        <Heart width={18} hight={18} />
+      <TouchableOpacity onPress={handleWishlistPress} style={styles.button}>
+        {isItemInWishlist ? (
+          <FilledHeart width={18} height={18} /> // Show filled heart if item is in wishlist
+        ) : (
+          <Heart width={18} height={18} /> // Show unfilled heart if item is not in wishlist
+        )}
       </TouchableOpacity>
     </View>
   );
@@ -29,7 +48,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    // padding: 16,
   },
   button: {
     backgroundColor: '#F5F5F5',

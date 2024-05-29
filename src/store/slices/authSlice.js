@@ -1,22 +1,13 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import auth from '@react-native-firebase/auth';
 import firestore from '@react-native-firebase/firestore';
-import {db} from '../../config/firebase';
-import {ToastAndroid} from 'react-native';
-// import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import { ToastAndroid } from 'react-native';
 
 const initialState = {
   user: null,
   isLoading: false,
   error: null,
 };
-
-// GoogleSignin.configure({
-//   webClientId:
-//     '410122792339-986og3kdl5im005jcjr1o4a9rnls27b4.apps.googleusercontent.com',
-//     /// the credential have to be replaced with the web client id of the google cloud console
-// });
-
 
 export const authSlice = createSlice({
   name: 'auth',
@@ -35,139 +26,209 @@ export const authSlice = createSlice({
       state.error = action.payload;
       state.isLoading = false;
     },
+    updateWishlist: (state, action) => {
+      if (state.user) {
+        state.user.wishlist = action.payload;
+      }
+    },
   },
 });
 
-export const {setUser, setLoading, setError} = authSlice.actions;
+export const { setUser, setLoading, setError, updateWishlist } = authSlice.actions;
+
+// Initialize the auth state by checking if a user is already logged in
+export const initializeAuthState = () => async dispatch => {
+  dispatch(setLoading(true));
+  auth().onAuthStateChanged(async user => {
+    if (user) {
+      try {
+        const userDoc = await firestore().collection('users').doc(user.uid).get();
+        const userData = userDoc.data();
+        dispatch(setUser({
+          displayName: userData.displayName || '',
+          email: userData.email || '',
+          phoneNumber: userData.phoneNumber || '',
+          wishlist: userData.wishlist || [],
+        }));
+      } catch (error) {
+        console.error("Failed to fetch user data: ", error);
+        dispatch(setError(error.message));
+      }
+    } else {
+      dispatch(setUser(null));
+    }
+    dispatch(setLoading(false));
+  });
+};
 
 // SignUp
-export const registerUser =
-  ({displayName, email, password, phoneNumber}) =>
-  async dispatch => {
-    dispatch(setLoading(true));
-    console.log(displayName, email, password, phoneNumber);
-    if (!displayName || !email || !password || !phoneNumber) {
-      ToastAndroid.show(
-        'Please fill your all required fields',
-        ToastAndroid.SHORT,
-      );
-      return;
-    }
-    try {
-      await auth().createUserWithEmailAndPassword(email, password);
-      auth().currentUser?.updateProfile({
-        displayName: displayName,
+export const registerUser = ({ displayName, email, password, phoneNumber }) => async dispatch => {
+  dispatch(setLoading(true));
+  if (!displayName || !email || !password || !phoneNumber) {
+    ToastAndroid.show('Please fill all required fields', ToastAndroid.SHORT);
+    dispatch(setLoading(false));
+    return;
+  }
+  try {
+    await auth().createUserWithEmailAndPassword(email, password);
+    const currentUser = auth().currentUser;
+    if (currentUser) {
+      await currentUser.updateProfile({ displayName });
+      await firestore().collection('users').doc(currentUser.uid).set({
+        displayName,
+        email,
+        phoneNumber,
+        wishlist: [],
       });
-      await db().collection('students').doc(auth().currentUser?.uid).set({
-        displayName: displayName,
-        email: email,
-        phoneNumber: phoneNumber,
-      });
-      dispatch(
-        setUser({
-          displayName: displayName,
-          email: email,
-          phoneNumber: phoneNumber,
-        }),
-      );
-      setLoading(false);
+      dispatch(setUser({ displayName, email, phoneNumber, wishlist: [] }));
       ToastAndroid.show('User registered successfully!', ToastAndroid.SHORT);
-    } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        ToastAndroid.show('This email is already in use', ToastAndroid.SHORT);
-      }
-      if (error.code === 'auth/invalid-email') {
-        ToastAndroid.show('This email is invalid', ToastAndroid.SHORT);
-      }
-      if (error.code === 'auth/weak-password') {
-        ToastAndroid.show('Password is too weak', ToastAndroid.SHORT);
-      }
-      console.log('Error', error.message);
-      setLoading(false);
     }
-  };
+  } catch (error) {
+    if (error.code === 'auth/email-already-in-use') {
+      ToastAndroid.show('This email is already in use', ToastAndroid.SHORT);
+    } else if (error.code === 'auth/invalid-email') {
+      ToastAndroid.show('This email is invalid', ToastAndroid.SHORT);
+    } else if (error.code === 'auth/weak-password') {
+      ToastAndroid.show('Password is too weak', ToastAndroid.SHORT);
+    } else {
+      ToastAndroid.show('Registration failed', ToastAndroid.SHORT);
+    }
+    console.error("Registration error: ", error.message);
+    dispatch(setError(error.message));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
 
-export const loginUser =
-  ({email, password}) =>
-  async dispatch => {
-    dispatch(setLoading(true));
-    try {
-      if (!email || !password) {
-        ToastAndroid.show(
-          'Please enter your email and password correctly',
-          ToastAndroid.SHORT,
-        );
-      }
-      await auth().signInWithEmailAndPassword(email, password);
-      const currentUser = auth().currentUser;
-      if (currentUser) {
-        dispatch(
-          setUser({
-            displayName: currentUser.displayName || '',
-            email: currentUser.email || '',
-          }),
-        );
-      }
+// Login
+export const loginUser = ({ email, password }) => async dispatch => {
+  dispatch(setLoading(true));
+  if (!email || !password) {
+    ToastAndroid.show('Please enter your email and password correctly', ToastAndroid.SHORT);
+    dispatch(setLoading(false));
+    return;
+  }
+  try {
+    await auth().signInWithEmailAndPassword(email, password);
+    const currentUser = auth().currentUser;
+    if (currentUser) {
+      const userDoc = await firestore().collection('users').doc(currentUser.uid).get();
+      const userData = userDoc.data();
+      dispatch(setUser({
+        displayName: userData.displayName || '',
+        email: userData.email || '',
+        phoneNumber: userData.phoneNumber || '',
+        wishlist: userData.wishlist || [],
+      }));
       ToastAndroid.show('User logged in!', ToastAndroid.SHORT);
-    } catch (error) {
-      if (error.code === 'auth/user-not-found') {
-        ToastAndroid.show('User not found', ToastAndroid.SHORT);
-      }
-      if (error.code === 'auth/wrong-password') {
-        ToastAndroid.show('Invalid password', ToastAndroid.SHORT);
-      }
-      if (error.code === 'auth/invalid-email') {
-        ToastAndroid.show('Invalid email', ToastAndroid.SHORT);
-      }
-      ToastAndroid.show('Login failed', ToastAndroid.SHORT);
-      dispatch(setError(error.message));
-    } finally {
-      dispatch(setLoading(false));
     }
-  };
+  } catch (error) {
+    if (error.code === 'auth/user-not-found') {
+      ToastAndroid.show('User not found', ToastAndroid.SHORT);
+    } else if (error.code === 'auth/wrong-password') {
+      ToastAndroid.show('Invalid password', ToastAndroid.SHORT);
+    } else if (error.code === 'auth/invalid-email') {
+      ToastAndroid.show('Invalid email', ToastAndroid.SHORT);
+    } else {
+      ToastAndroid.show('Login failed', ToastAndroid.SHORT);
+    }
+    console.error("Login error: ", error.message);
+    dispatch(setError(error.message));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
 
+// // Add to Wishlist
+// export const addToWishlist = itemId => async (dispatch, getState) => {
+//   dispatch(setLoading(true));
+//   const { user } = getState().auth;
+//   if (!user) {
+//     ToastAndroid.show('No user logged in', ToastAndroid.SHORT);
+//     dispatch(setLoading(false));
+//     return;
+//   }
+//   const newWishlist = [...user.wishlist, itemId];
+//   try {
+//     await firestore().collection('users').doc(auth().currentUser.uid).update({
+//       wishlist: newWishlist,
+//     });
+//     dispatch(updateWishlist(newWishlist));
+//     ToastAndroid.show('Item added to wishlist!', ToastAndroid.SHORT);
+//   } catch (error) {
+//     console.error("Error adding to wishlist: ", error.message);
+//     dispatch(setError(error.message));
+//   } finally {
+//     dispatch(setLoading(false));
+//   }
+// };
 
-  // export const googleSignin = async () => {
-  //   try {
-  //     await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
-  //     await GoogleSignin.signOut();
-  //     const {idToken} = await GoogleSignin.signIn();
-  //     const googleCredential = auth.GoogleAuthProvider.credential(idToken);
-  //     await auth().signInWithCredential(googleCredential);
-  //     const userDoc = await firestore()
-  //       .collection('users')
-  //       .doc(auth()?.currentUser?.uid)
-  //       .get();
-  
-  //     if (!userDoc.exists) {
-  //       await firestore()
-  //         .collection('users')
-  //         .doc(auth()?.currentUser?.uid)
-  //         .set({
-  //           displayName: auth()?.currentUser?.displayName,
-  //           email: auth()?.currentUser?.email,
-  //           profileImage: auth()?.currentUser?.photoURL || null,
-  //           uid: auth()?.currentUser?.uid,
-  //         });
-  //       ToastAndroid.show('New user signed up successfully!', ToastAndroid.SHORT);
-  //     } else {
-  //       ToastAndroid.show('User signed in successfully!', ToastAndroid.SHORT);
-  //     }
-  //   } catch (error) {
-  //     console.log('error', error);
-  //     ToastAndroid.show('Google Signin failed', ToastAndroid.SHORT);
-  //     if (error.code === 'auth/account-exists-with-different-credential') {
-  //       console.log('danger', 'Account already exists with different credential');
-  //       ToastAndroid.show(
-  //         'Account already exists with different credential',
-  //         ToastAndroid.SHORT,
-  //       );
-  //     }
-  //     if (error.code === 'auth/invalid-credential') {
-  //       console.log('danger', 'Invalid credential');
-  //       ToastAndroid.show('Invalid credential', ToastAndroid.SHORT);
-  //     }
-  //   }
-  // };
+// // Remove from Wishlist
+// export const removeFromWishlist = itemId => async (dispatch, getState) => {
+//   dispatch(setLoading(true));
+//   const { user } = getState().auth;
+//   if (!user) {
+//     ToastAndroid.show('No user logged in', ToastAndroid.SHORT);
+//     dispatch(setLoading(false));
+//     return;
+//   }
+//   const newWishlist = user.wishlist.filter(id => id !== itemId);
+//   try {
+//     await firestore().collection('users').doc(auth().currentUser.uid).update({
+//       wishlist: newWishlist,
+//     });
+//     dispatch(updateWishlist(newWishlist));
+//     ToastAndroid.show('Item removed from wishlist!', ToastAndroid.SHORT);
+//   } catch (error) {
+//     console.error("Error removing from wishlist: ", error.message);
+//     dispatch(setError(error.message));
+//   } finally {
+//     dispatch(setLoading(false));
+//   }
+// };
+
+const isItemInWishlist = (wishlist, item) => {
+  return wishlist.some(wishlistItem => wishlistItem.id === item.id);
+};
+
+// Add to Wishlist
+export const addToWishlist = (item) => async (dispatch, getState) => {
+  dispatch(setLoading(true));
+  const { user } = getState().auth;
+  const newWishlist = [...user.wishlist, item];
+
+  try {
+    await firestore().collection('users').doc(auth().currentUser?.uid).update({
+      wishlist: newWishlist,
+    });
+    dispatch(updateWishlist(newWishlist));
+    ToastAndroid.show('Item added to wishlist!', ToastAndroid.SHORT);
+  } catch (error) {
+    console.log('Error adding to wishlist: ', error.message);
+    dispatch(setError(error.message));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
+
+// Remove from Wishlist
+export const removeFromWishlist = (itemId) => async (dispatch, getState) => {
+  dispatch(setLoading(true));
+  const { user } = getState().auth;
+  const newWishlist = user.wishlist.filter(wishlistItem => wishlistItem.id !== itemId);
+
+  try {
+    await firestore().collection('users').doc(auth().currentUser?.uid).update({
+      wishlist: newWishlist,
+    });
+    dispatch(updateWishlist(newWishlist));
+    ToastAndroid.show('Item removed from wishlist!', ToastAndroid.SHORT);
+  } catch (error) {
+    console.log('Error removing from wishlist: ', error.message);
+    dispatch(setError(error.message));
+  } finally {
+    dispatch(setLoading(false));
+  }
+};
 
 export default authSlice.reducer;

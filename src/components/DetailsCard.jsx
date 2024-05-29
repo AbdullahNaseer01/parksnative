@@ -19,12 +19,11 @@ const DetailsCard = ({data}) => {
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate('detailsScreen', {data})}>
+      onPress={() =>
+        navigation.navigate('detailsScreen', {data, dataType: 'parks'})
+      }>
       <View style={styles.imageContainer}>
-        <Image
-          source={{uri: imageUrl}}
-          style={styles.image}
-        />
+        <Image source={{uri: imageUrl}} style={styles.image} />
       </View>
       <View style={styles.detailsContainer}>
         <Text style={styles.heading} numberOfLines={1} ellipsizeMode="tail">
@@ -91,4 +90,3 @@ const styles = StyleSheet.create({
     color: COLORS.TEXTSECONDARY,
   },
 });
-
