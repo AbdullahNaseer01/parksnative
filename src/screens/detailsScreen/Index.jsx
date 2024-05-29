@@ -17,9 +17,11 @@ const DetailsScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState('');
   const data = route.params.data;
+  const dataType = route.params.dataType;
 
   const previewImages = data?.images?.map(image => image.url);
   const activities = data?.activities?.map(activity => activity.name);
+  const articlesTags = data?.tags?.map(tag => tag);
 
   const handleImagePress = image => {
     setSelectedImage(image);
@@ -31,15 +33,124 @@ const DetailsScreen = ({route}) => {
   };
 
   useEffect(() => {
-    console.log(data, ' data from details screen');
+    console.log(data, '<<<<<<<<<<<<<============== data from details screen');
   }, [data]);
+
+  const renderDetails = () => {
+    switch (dataType) {
+      case 'parks':
+        return (
+          <>
+            <Text style={styles.heading}>{data?.name}</Text>
+            <View style={styles.locationContainer}>
+              <Location width={15} height={15} />
+              <Text style={styles.locationText}>
+                {data?.addresses[0]?.city}
+              </Text>
+            </View>
+            <Text style={styles.detailsText}>
+              {data?.description || 'Description not available'}
+            </Text>
+            <Text style={styles.heading}>Activities</Text>
+            <FlatList
+              horizontal
+              data={activities}
+              renderItem={({item}) => (
+                <View style={styles.activityCard}>
+                  <Text style={styles.activityText}>{item}</Text>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.activitiesContainer}
+            />
+            <View>
+              <Text style={styles.heading}>Map</Text>
+              <View style={styles.mapContainer}></View>
+            </View>
+          </>
+        );
+      case 'articles':
+        return (
+          <>
+            <Text style={styles.heading}>Title</Text>
+            <Text style={styles.detailsText}>{data?.title}</Text>
+            <Text style={styles.heading}>Author</Text>
+            <Text style={styles.detailsText}>{data?.author}</Text>
+            <Text style={styles.heading}>Listing Description</Text>
+            <Text style={styles.detailsText}>{data?.listingDescription}</Text>
+            <Text style={styles.heading}>Tags</Text>
+            <FlatList
+              horizontal
+              data={articlesTags}
+              renderItem={({item}) => (
+                <View style={styles.activityCard}>
+                  <Text style={styles.activityText}>{item}</Text>
+                </View>
+              )}
+              keyExtractor={(item, index) => index.toString()}
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.activitiesContainer}
+            />
+          </>
+        );
+      case 'campGround':
+        return (
+          <>
+            <Text style={styles.heading}>{data?.name}</Text>
+            <View style={styles.locationContainer}>
+              <Location width={15} height={15} />
+              <Text style={styles.locationText}>
+                {data?.addresses[0]?.city}
+              </Text>
+            </View>
+            <Text style={styles.detailsText}>
+              {data?.description || 'Description not available'}
+            </Text>
+            <View>
+              <Text style={styles.heading}>Map</Text>
+              <View style={styles.mapContainer}></View>
+            </View>
+          </>
+        );
+      case 'events':
+        return (
+          <>
+            <Text style={styles.heading}>Event Name</Text>
+            <Text style={styles.detailsText}>{data?.title}</Text>
+            <Text style={styles.heading}>Date</Text>
+            <Text style={styles.detailsText}>{data?.date}</Text>
+            <Text style={styles.heading}>Description</Text>
+            <Text style={styles.detailsText}>{data?.description}</Text>
+          </>
+        );
+      case 'lessonPlans':
+        return (
+          <>
+            <Text style={styles.heading}>Lesson Title</Text>
+            <Text style={styles.detailsText}>{data?.title}</Text>
+            <Text style={styles.heading}>Grade Level</Text>
+            <Text style={styles.detailsText}>{data?.gradeLevel}</Text>
+            <Text style={styles.heading}>Subject</Text>
+            <Text style={styles.detailsText}>{data?.subject[0] || ''}</Text>
+          </>
+        );
+      default:
+        return <Text style={styles.detailsText}>Data not available</Text>;
+    }
+  };
 
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
         <Image
           source={{
-            uri: data?.images[0]?.url || 'https://via.placeholder.com/150',
+            uri:
+              data?.images &&
+              data.images[0]?.url &&
+              data.images[0].url.startsWith('http')
+                ? data.images[0].url
+                : 'https://static1.anpoimages.com/wordpress/wp-content/uploads/2021/02/06/national-park-service-hero.jpg',
           }}
           style={styles.image}
           resizeMode="cover"
@@ -49,14 +160,7 @@ const DetailsScreen = ({route}) => {
         </View>
       </View>
       <ScrollView style={styles.detailsContainer}>
-        <Text style={styles.heading}>Name</Text>
-        <View style={styles.locationContainer}>
-          <Location width={15} height={15} />
-          <Text style={styles.locationText}>{data?.addresses[0]?.city}</Text>
-        </View>
-        <Text style={styles.detailsText}>
-          {data?.description || 'Description not available'}
-        </Text>
+        {renderDetails()}
         <Text style={styles.heading}>Preview</Text>
         <FlatList
           horizontal
@@ -70,23 +174,6 @@ const DetailsScreen = ({route}) => {
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.previewContainer}
         />
-        <Text style={styles.heading}>Activities</Text>
-        <FlatList
-          horizontal
-          data={activities}
-          renderItem={({item}) => (
-            <View style={styles.activityCard}>
-              <Text style={styles.activityText}>{item}</Text>
-            </View>
-          )}
-          keyExtractor={item => item.id}
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.activitiesContainer}
-        />
-        <View>
-          <Text style={styles.heading}>Map</Text>
-          <View style={styles.mapContainer}></View>
-        </View>
       </ScrollView>
       <Modal visible={modalVisible} transparent={true} animationType="slide">
         <View style={styles.modalContainer}>

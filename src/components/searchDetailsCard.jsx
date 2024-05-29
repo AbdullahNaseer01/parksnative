@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import {COLORS} from '../constants/colors.constant';
 import Location from '../assets/icons/locationGreen.svg';
@@ -34,10 +34,15 @@ const SearchDetailsCard = ({data, dataType}) => {
     'No description available',
   );
 
+  useEffect(() => {
+    console.log(dataType, '<<<<<<<<<<<<<============== data type from details card');
+  }, [data]);
+  
+
   return (
     <TouchableOpacity
       style={styles.container}
-      onPress={() => navigation.navigate('detailsScreen', {data})}>
+      onPress={() => navigation.navigate('detailsScreen', {data, dataType})}>
       <View style={styles.imageContainer}>
         <Image source={{uri: imageUrl}} style={styles.image} />
       </View>

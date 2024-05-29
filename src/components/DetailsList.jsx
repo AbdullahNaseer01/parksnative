@@ -17,6 +17,7 @@ const DetailsCardList = ({
   handleLoadMore,
   hasMore,
   dataType,
+  onItemPress,
 }) => {
   useEffect(() => {
     console.log(data, ' data from details card list');
@@ -28,7 +29,7 @@ const DetailsCardList = ({
     <ScrollView>
       <View style={styles.container}>
         {data?.map((item, index) => (
-          <SearchDetailsCard key={index} data={item} dataType={dataType} />
+          <SearchDetailsCard key={index} data={item} dataType={dataType} onItemPress={onItemPress} />
         ))}
         {hasMore && (
           <TouchableOpacity
