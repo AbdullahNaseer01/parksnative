@@ -1,6 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {COLORS} from '../constants/colors.constant';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const CategoryCard = ({stateName, Flag, code, onSelect, selectedState}) => {
   const isSelected = selectedState === code;
@@ -18,7 +19,7 @@ const CategoryCard = ({stateName, Flag, code, onSelect, selectedState}) => {
         {backgroundColor: isSelected ? COLORS.PRIMARY : '#F6F8FA'},
       ]}
       onPress={handlePress}>
-      {/* {<Flag width={15} height={15} />} */}
+      <Icon name="location-on" size={15} color={COLORS.TEXTLINK} />
       <Text
         style={[
           styles.text,

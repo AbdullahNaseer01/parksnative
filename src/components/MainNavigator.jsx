@@ -1,8 +1,6 @@
 import {StyleSheet, View, TouchableOpacity} from 'react-native';
-import React, {useEffect} from 'react';
-import LeftArrow from '../assets/icons/leftArrow.svg';
-import Heart from '../assets/icons/heart.svg';
-import FilledHeart from '../assets/icons/heartIcon'; // Import filled heart icon
+import React from 'react';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
 import {addToWishlist, removeFromWishlist} from '../store/slices/authSlice';
@@ -27,14 +25,10 @@ const MainNavigator = ({data, dataType}) => {
           navigation.goBack();
         }}
         style={styles.button}>
-        <LeftArrow width={18} height={18} />
+        <Icon name="arrow-back" size={24} color="#000" />
       </TouchableOpacity>
       <TouchableOpacity onPress={handleWishlistPress} style={styles.button}>
-        {isItemInWishlist ? (
-          <FilledHeart width={18} height={18} /> // Show filled heart if item is in wishlist
-        ) : (
-          <Heart width={18} height={18} /> // Show unfilled heart if item is not in wishlist
-        )}
+        <Icon name={isItemInWishlist ? "favorite" : "favorite-border"} size={24} color="#000" />
       </TouchableOpacity>
     </View>
   );

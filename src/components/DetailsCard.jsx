@@ -1,7 +1,7 @@
 import React from 'react';
 import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../constants/colors.constant';
-import Location from '../assets/icons/locationGreen.svg';
 import {useNavigation} from '@react-navigation/native';
 
 const DetailsCard = ({data}) => {
@@ -30,7 +30,7 @@ const DetailsCard = ({data}) => {
           {name}
         </Text>
         <View style={styles.locationContainer}>
-          <Location width={15} height={15} />
+          <Icon name="location-on" size={15} color={COLORS.TEXTLINK} />
           <Text style={styles.locationText}>{city}</Text>
         </View>
         <Text style={styles.description} numberOfLines={2} ellipsizeMode="tail">

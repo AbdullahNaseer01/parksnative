@@ -14,7 +14,6 @@ import {COLORS} from '../../constants/colors.constant';
 import Location from '../../assets/icons/locationGreen.svg';
 import MapView from 'react-native-maps';
 import {useDispatch, useSelector} from 'react-redux';
-import Button from '../../components/Button';
 import {addToWishlist, removeFromWishlist} from '../../store/slices/authSlice';
 const DetailsScreen = ({route}) => {
   const [modalVisible, setModalVisible] = useState(false);

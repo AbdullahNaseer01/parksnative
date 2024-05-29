@@ -7,8 +7,7 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import SearchIcon from '../../assets/icons/search.svg';
-import FilterIcon from '../../assets/icons/filter.svg';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import CustomFilterModal from '../../components/FilterModal';
 import DetailsCardList from '../../components/DetailsCardList';
 import {useDispatch, useSelector} from 'react-redux';
@@ -119,10 +118,6 @@ const Search = () => {
   };
 
   const handleSearch = () => {
-    Alert.alert(
-      'Search Filters',
-      `Query: ${query}\nState: ${selectedState}\nFilter: ${selectedFilter}`,
-    );
     setStart(0);
     fetchSelectedData();
   };
@@ -159,7 +154,7 @@ const Search = () => {
   return (
     <ScrollView style={styles.container}>
       <View style={styles.searchContainer}>
-        <SearchIcon width={20} height={20} />
+        <Icon name="search" size={20} color="gray" />
         <TextInput
           style={styles.input}
           placeholder="Enter your query"
@@ -170,7 +165,7 @@ const Search = () => {
         <TouchableOpacity
           style={styles.filterIconContainer}
           onPress={() => setModalVisible(true)}>
-          <FilterIcon width={20} height={20} color="gray" />
+          <Icon name="filter-list" size={20} color="gray" />
         </TouchableOpacity>
       </View>
       <DetailsList

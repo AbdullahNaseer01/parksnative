@@ -6,8 +6,8 @@ import {
   ImageBackground,
   TouchableOpacity,
 } from 'react-native';
-import Location from '../assets/icons/location.svg';
 import {COLORS} from '../constants/colors.constant';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 
 const MainCard = ({name, location, imageURL, styleProp, handlePress}) => {
   return (
@@ -22,7 +22,7 @@ const MainCard = ({name, location, imageURL, styleProp, handlePress}) => {
           <View style={styles.textContainer}>
             <Text style={styles.locationTitle}>{name}</Text>
             <View style={styles.locationContainer}>
-              <Location width={15} height={15} />
+              <Icon name="location-on" size={15} color={COLORS.WHITE} />
               <Text style={styles.locationText}>{location}</Text>
             </View>
           </View>

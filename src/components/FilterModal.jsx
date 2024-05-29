@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   ScrollView,
 } from 'react-native';
+import Icon from 'react-native-vector-icons/MaterialIcons';
 import {COLORS} from '../constants/colors.constant';
 import {states} from '../assets/icons/states/states';
 
@@ -21,12 +22,20 @@ const CustomFilterModal = ({
   handleApplyFilters,
 }) => {
   const filterOptions = [
-    {label: 'Articles', value: 'articles'},
-    {label: 'Lesson Plans', value: 'lessonPlans'},
-    {label: 'Camp Ground', value: 'campGround'},
-    {label: 'Events', value: 'events'},
-    {label: 'Parks', value: 'parks'},
+    {label: 'Articles', value: 'articles', icon: 'article'},
+    {label: 'Lesson Plans', value: 'lessonPlans', icon: 'school'},
+    {label: 'Camp Ground', value: 'campGround', icon: 'terrain'},
+    {label: 'Events', value: 'events', icon: 'event'},
+    {label: 'Parks', value: 'parks', icon: 'park'},
   ];
+
+  const toggleStateSelection = (stateCode) => {
+    if (selectedState === stateCode) {
+      setSelectedState(null);  // Unselect the state if it is already selected
+    } else {
+      setSelectedState(stateCode);  // Select the new state
+    }
+  };
 
   return (
     <Modal
@@ -58,6 +67,7 @@ const CustomFilterModal = ({
                           styles.filterButtonSelected,
                       ]}
                       onPress={() => setSelectedFilter(option.value)}>
+                      <Icon name={option.icon} size={20} color={selectedFilter === option.value ? 'white' : 'black'} />
                       <Text
                         style={[
                           styles.filterButtonText,
@@ -79,7 +89,8 @@ const CustomFilterModal = ({
                         selectedState === state.code &&
                           styles.filterButtonSelected,
                       ]}
-                      onPress={() => setSelectedState(state.code)}>
+                      onPress={() => toggleStateSelection(state.code)}>
+                      <Icon name="location-on" size={20} color={selectedState === state.code ? 'white' : 'black'} />
                       <Text
                         style={[
                           styles.filterButtonText,
@@ -171,6 +182,7 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     alignItems: 'center',
     marginTop: 20,
+    paddingHorizontal: 16,
   },
   applyButtonText: {
     color: 'white',

@@ -1,17 +1,23 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React, {useEffect} from 'react';
 import {COLORS} from '../constants/colors.constant';
 import Arrow from '../assets/icons/rightArrow.svg';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import {useNavigation} from '@react-navigation/native';
 
-const Navigator = ({name = 'name'}) => {
-
+const Navigator = ({name = 'name', screen = 'search'}) => {
+  const navigation = useNavigation();
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>{name}</Text>
-      <View style={styles.linkContainer}>
+      <TouchableOpacity
+        onPress={() => {
+          navigation.navigate(screen);
+        }}
+        style={styles.linkContainer}>
         <Text style={styles.linkText}>View all</Text>
-        <Arrow width={12} height={12} />
-      </View>
+        <Icon name="arrow-right" size={15} color={COLORS.TEXTLINK} />
+      </TouchableOpacity>
     </View>
   );
 };

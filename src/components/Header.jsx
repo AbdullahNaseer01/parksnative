@@ -80,7 +80,7 @@ import React from 'react';
 import MenuIcon from '../assets/icons/menuIcon.svg';
 import Location from '../assets/icons/locationGreen.svg';
 import { COLORS } from '../constants/colors.constant';
-
+import Icon from 'react-native-vector-icons/MaterialIcons';
 const Header = () => {
   const profileImageUrl = 'https://via.placeholder.com/36'; // Placeholder URL for the profile image
 
@@ -92,7 +92,7 @@ const Header = () => {
       <View>
         <Text style={styles.currentLocationText}>Current Location</Text>
         <View style={styles.locationContainer}>
-          <Location width={15} height={15} />
+        <Icon name="location-on" size={15} color={COLORS.TEXTLINK} />
           <Text style={styles.locationText}>location here</Text>
         </View>
       </View>
