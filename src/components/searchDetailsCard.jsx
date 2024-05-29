@@ -83,6 +83,8 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginRight: 10,
+    backgroundColor: COLORS.TEXTLINK,
+    borderRadius: 10,
   },
   image: {
     width: 80,

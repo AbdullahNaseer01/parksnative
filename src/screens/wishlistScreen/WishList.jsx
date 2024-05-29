@@ -139,7 +139,6 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   cardItem: {
-    backgroundColor: 'red',
     width: '46%',
     marginBottom: 16,
   },

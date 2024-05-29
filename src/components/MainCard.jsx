@@ -45,6 +45,7 @@ const styles = StyleSheet.create({
     borderRadius: 13,
     overflow: 'hidden',
     marginRight: 12,
+    backgroundColor: COLORS.TEXTLINK,
   },
   imageBackground: {
     width: '100%',
